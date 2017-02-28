@@ -137,10 +137,10 @@ pt.ui.Carousel.prototype.setAutoplay = function(autoplay) {
 
 
 pt.ui.Carousel.prototype.setActiveIndex = function(index) {
-  this.autoplayTimer_.stop();
+  //this.autoplayTimer_.stop();
   this.updateStyle_(index);
   this.activeIndex_ = index;
-  this.autoplayTimer_.start();
+  //this.autoplayTimer_.start();
   return true;
 };
 
