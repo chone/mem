@@ -108,11 +108,19 @@ pt.ui.FastClick = function(layer, options) {
   }
 
 
+  /*
   var methods = ['onMouse', 'onClick', 'onTouchStart', 'onTouchMove', 'onTouchEnd', 'onTouchCancel'];
   var context = this;
   for (var i = 0, l = methods.length; i < l; i++) {
     context[methods[i]] = bind(context[methods[i]], context);
   }
+  */
+  this.onMouse = bind(this.onMouse, this);
+  this.onClick = bind(this.onClick, this);
+  this.onTouchStart = bind(this.onTouchStart, this);
+  this.onTouchMove = bind(this.onTouchMove, this);
+  this.onTouchEnd = bind(this.onTouchEnd, this);
+  this.onTouchCancel = bind(this.onTouchCancel, this);
 
   // Set up event handlers as required
   if (pt.ui.FastClick.deviceIsAndroid) {
