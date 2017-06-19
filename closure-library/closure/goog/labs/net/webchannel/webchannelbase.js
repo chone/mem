@@ -35,8 +35,8 @@ goog.require('goog.labs.net.webChannel.Wire');
 goog.require('goog.labs.net.webChannel.WireV8');
 goog.require('goog.labs.net.webChannel.netUtils');
 goog.require('goog.labs.net.webChannel.requestStats');
-goog.require('goog.labs.net.webChannel.requestStats.Stat');
 goog.require('goog.log');
+goog.require('goog.net.WebChannel');
 goog.require('goog.net.XhrIo');
 goog.require('goog.net.rpc.HttpCors');
 goog.require('goog.object');
@@ -45,6 +45,7 @@ goog.require('goog.structs');
 goog.require('goog.structs.CircularBuffer');
 
 goog.scope(function() {
+var WebChannel = goog.net.WebChannel;
 var BaseTestChannel = goog.labs.net.webChannel.BaseTestChannel;
 var ChannelRequest = goog.labs.net.webChannel.ChannelRequest;
 var ConnectionState = goog.labs.net.webChannel.ConnectionState;
@@ -113,13 +114,19 @@ goog.labs.net.webChannel.WebChannelBase = function(
    * Previous connectivity test results.
    * @private {!ConnectionState}
    */
-  this.ConnState_ = opt_conn || new ConnectionState();
+  this.connState_ = opt_conn || new ConnectionState();
 
   /**
    * Extra HTTP headers to add to all the requests sent to the server.
    * @private {Object}
    */
   this.extraHeaders_ = null;
+
+  /**
+   * Extra HTTP headers to add to the init request(s) sent to the server.
+   * @private {Object}
+   */
+  this.initHeaders_ = null;
 
   /**
    * @private {?string} The URL param name to overwrite custom HTTP headers
@@ -361,6 +368,15 @@ goog.labs.net.webChannel.WebChannelBase = function(
    * @private {!WireV8}
    */
   this.wireCodec_ = new WireV8();
+
+  /**
+   * Whether to run the channel test as a background process to not block
+   * the OPEN event.
+   *
+   * @private {boolean}
+   */
+  this.backgroundChannelTest_ =
+      (opt_options && opt_options.backgroundChannelTest) || false;
 };
 
 var WebChannelBase = goog.labs.net.webChannel.WebChannelBase;
@@ -560,6 +576,16 @@ WebChannelBase.prototype.connect = function(
     this.extraParams_['OAID'] = opt_oldArrayId;
   }
 
+  if (this.backgroundChannelTest_) {
+    this.channelDebug_.debug('connect() bypassed channel-test.');
+    this.connState_.handshakeResult = [];
+    this.connState_.bufferingProxyResult = false;
+
+    // TODO(user): merge states with background channel test
+    // requestStats.setTimeout(goog.bind(this.connectTest_, this, testPath), 0);
+    //     this.connectChannel_();
+  }
+
   this.connectTest_(testPath);
 };
 
@@ -693,6 +719,27 @@ WebChannelBase.prototype.setExtraHeaders = function(extraHeaders) {
 
 
 /**
+ * Returns the extra HTTP headers to add to the init requests
+ * sent to the server.
+ *
+ * @return {Object} The HTTP headers, or null.
+ */
+WebChannelBase.prototype.getInitHeaders = function() {
+  return this.initHeaders_;
+};
+
+
+/**
+ * Sets extra HTTP headers to add to the init requests sent to the server.
+ *
+ * @param {Object} initHeaders The HTTP headers, or null.
+ */
+WebChannelBase.prototype.setInitHeaders = function(initHeaders) {
+  this.initHeaders_ = initHeaders;
+};
+
+
+/**
  * Sets the URL param name to overwrite custom HTTP headers.
  *
  * @param {string} httpHeadersOverwriteParam The URL param name.
@@ -732,6 +779,14 @@ WebChannelBase.prototype.setHttpSessionId = function(httpSessionId) {
  */
 WebChannelBase.prototype.getHttpSessionId = function() {
   return this.httpSessionId_;
+};
+
+
+/**
+ * @override
+ */
+WebChannelBase.prototype.getBackgroundChannelTest = function() {
+  return this.backgroundChannelTest_;
 };
 
 
@@ -1031,7 +1086,9 @@ WebChannelBase.prototype.maybeRetryForwardChannel_ = function(request) {
     return false;
   }
 
-  if (this.state_ == WebChannelBase.State.INIT ||  // no retry open_()
+  // No retry for open_() and fail-fast
+  if (this.state_ == WebChannelBase.State.INIT ||
+      this.state_ == WebChannelBase.State.OPENING ||
       (this.forwardChannelRetryCount_ >= this.getForwardChannelMaxRetries())) {
     return false;
   }
@@ -1115,8 +1172,19 @@ WebChannelBase.prototype.open_ = function() {
   var request =
       ChannelRequest.createChannelRequest(this, this.channelDebug_, '', rid);
 
+  // mix the init headers
+  var extraHeaders = this.extraHeaders_;
+  if (this.initHeaders_) {
+    if (extraHeaders) {
+      extraHeaders = goog.object.clone(extraHeaders);
+      goog.object.extend(extraHeaders, this.initHeaders_);
+    } else {
+      extraHeaders = this.initHeaders_;
+    }
+  }
+
   if (this.httpHeadersOverwriteParam_ === null) {
-    request.setExtraHeaders(this.extraHeaders_);
+    request.setExtraHeaders(extraHeaders);
   }
 
   var requestText = this.dequeueOutgoingMaps_();
@@ -1127,12 +1195,18 @@ WebChannelBase.prototype.open_ = function() {
     uri.setParameterValue('CVER', this.clientVersion_);
   }
 
+  // http-session-id to be generated as the response
+  if (this.getBackgroundChannelTest() && this.getHttpSessionIdParam()) {
+    uri.setParameterValues(
+        WebChannel.X_HTTP_SESSION_ID, this.getHttpSessionIdParam());
+  }
+
   // Add the reconnect parameters.
   this.addAdditionalParams_(uri);
 
-  if (this.httpHeadersOverwriteParam_ && this.extraHeaders_) {
+  if (this.httpHeadersOverwriteParam_ && extraHeaders) {
     httpCors.setHttpHeadersWithOverwriteParam(
-        uri, this.httpHeadersOverwriteParam_, this.extraHeaders_);
+        uri, this.httpHeadersOverwriteParam_, extraHeaders);
   }
 
   this.forwardChannelRequestPool_.addRequest(request);
@@ -1423,7 +1497,7 @@ WebChannelBase.prototype.onRequestData = function(request, responseText) {
     }
     if (!goog.string.isEmptyOrWhitespace(responseText)) {
       var response = this.wireCodec_.decodeMessage(responseText);
-      this.onInput_(/** @type {!Array<?>} */ (response));
+      this.onInput_(/** @type {!Array<?>} */ (response), request);
     }
   }
 };
@@ -1691,12 +1765,51 @@ WebChannelBase.prototype.setRetryDelay = function(baseDelayMs, delaySeedMs) {
 
 
 /**
+ * Apply any handshake control headers.
+ * @param {!ChannelRequest} request The underlying request object
+ * @private
+ */
+WebChannelBase.prototype.applyControlHeaders_ = function(request) {
+  if (!this.backgroundChannelTest_) {
+    return;
+  }
+
+  var xhr = request.getXhr();
+  if (xhr) {
+    var clientProtocol =
+        xhr.getStreamingResponseHeader(WebChannel.X_CLIENT_WIRE_PROTOCOL);
+    if (clientProtocol) {
+      this.forwardChannelRequestPool_.applyClientProtocol(clientProtocol);
+    }
+
+    if (this.getHttpSessionIdParam()) {
+      var httpSessionIdHeader =
+          xhr.getStreamingResponseHeader(WebChannel.X_HTTP_SESSION_ID);
+      if (httpSessionIdHeader) {
+        this.setHttpSessionId(httpSessionIdHeader);
+        // update the cached uri
+        var httpSessionIdParam = this.getHttpSessionIdParam();
+
+        this.forwardChannelUri_.setParameterValue(
+            /** @type {string} */ (httpSessionIdParam),  // never null
+            httpSessionIdHeader);
+      } else {
+        this.channelDebug_.warning(
+            'Missing X_HTTP_SESSION_ID in the handshake response');
+      }
+    }
+  }
+};
+
+
+/**
  * Processes the data returned by the server.
  * @param {!Array<!Array<?>>} respArray The response array returned
  *     by the server.
+ * @param {!ChannelRequest} request The underlying request object
  * @private
  */
-WebChannelBase.prototype.onInput_ = function(respArray) {
+WebChannelBase.prototype.onInput_ = function(respArray, request) {
   var batch =
       this.handler_ && this.handler_.channelHandleMultipleArrays ? [] : null;
   for (var i = 0; i < respArray.length; i++) {
@@ -1719,6 +1832,8 @@ WebChannelBase.prototype.onInput_ = function(respArray) {
           this.serverVersion_ = negotiatedServerVersion;
           this.channelDebug_.info('SVER=' + this.serverVersion_);
         }
+
+        this.applyControlHeaders_(request);
 
         this.state_ = WebChannelBase.State.OPENED;
         if (this.handler_) {
@@ -1814,9 +1929,7 @@ WebChannelBase.prototype.testNetworkCallback_ = function(networkUp) {
   } else {
     this.channelDebug_.info('Failed to ping google.com');
     requestStats.notifyStatEvent(requestStats.Stat.ERROR_NETWORK);
-    // We call onError_ here instead of signalError_ because the latter just
-    // calls notifyStatEvent, and we don't want to have another stat event.
-    this.onError_(WebChannelBase.Error.NETWORK);
+    // Do not call onError_ again to eliminate duplicated Error events.
   }
 };
 
@@ -1893,7 +2006,7 @@ WebChannelBase.prototype.getForwardChannelUri = function(path) {
  * @override
  */
 WebChannelBase.prototype.getConnectionState = function() {
-  return this.ConnState_;
+  return this.connState_;
 };
 
 

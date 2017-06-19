@@ -29,6 +29,7 @@ goog.require('goog.i18n.CompactNumberFormatSymbols');
 goog.require('goog.i18n.NumberFormatSymbols');
 goog.require('goog.i18n.currency');
 goog.require('goog.math');
+goog.require('goog.string');
 
 
 
@@ -212,6 +213,10 @@ goog.i18n.NumberFormat.prototype.setMinimumFractionDigits = function(min) {
  * @return {!goog.i18n.NumberFormat} Reference to this NumberFormat object.
  */
 goog.i18n.NumberFormat.prototype.setMaximumFractionDigits = function(max) {
+  if (max > 308) {
+    // Math.pow(10, 309) becomes Infinity which breaks the logic in this class.
+    throw Error('Unsupported maximum fraction digits: ' + max);
+  }
   this.maximumFractionDigits_ = max;
   return this;
 };
@@ -320,7 +325,7 @@ goog.i18n.NumberFormat.prototype.applyPattern_ = function(pattern) {
     this.negativeSuffix_ = this.parseAffix_(pattern, pos);
   } else {
     // if no negative affix specified, they share the same positive affix
-    this.negativePrefix_ = this.positivePrefix_ + this.negativePrefix_;
+    this.negativePrefix_ += this.positivePrefix_;
     this.negativeSuffix_ += this.positiveSuffix_;
   }
 };
@@ -458,6 +463,7 @@ goog.i18n.NumberFormat.prototype.parseNumber_ = function(text, pos) {
   var sawDecimal = false;
   var sawExponent = false;
   var sawDigit = false;
+  var exponentPos = -1;
   var scale = 1;
   var decimal = goog.i18n.NumberFormatSymbols.DECIMAL_SEP;
   var grouping = goog.i18n.NumberFormatSymbols.GROUP_SEP;
@@ -497,7 +503,13 @@ goog.i18n.NumberFormat.prototype.parseNumber_ = function(text, pos) {
       }
       normalizedText += 'E';
       sawExponent = true;
+      exponentPos = pos[0];
     } else if (ch == '+' || ch == '-') {
+      // Stop parsing if a '+' or '-' sign is found after digits have been found
+      // but it's not located right after an exponent sign.
+      if (sawDigit && exponentPos != pos[0] - 1) {
+        break;
+      }
       normalizedText += ch;
     } else if (
         this.multiplier_ == 1 &&
@@ -785,7 +797,6 @@ goog.i18n.NumberFormat.prototype.subformatFixed_ = function(
   }
 
   var rounded = this.roundNumber_(number);
-  var power = Math.pow(10, this.maximumFractionDigits_);
   var intValue = rounded.intValue;
   var fracValue = rounded.fracValue;
 
@@ -854,7 +865,27 @@ goog.i18n.NumberFormat.prototype.subformatFixed_ = function(
     parts.push(decimal);
   }
 
-  var fracPart = '' + (fracValue + power);
+  var fracPart = String(fracValue);
+  // Handle case where fracPart is in scientific notation.
+  var fracPartSplit = fracPart.split('e+');
+  if (fracPartSplit.length == 2) {
+    // Only keep significant digits.
+    var floatFrac = parseFloat(fracPartSplit[0]);
+    fracPart = String(
+        this.roundToSignificantDigits_(floatFrac, this.significantDigits_, 1));
+    fracPart = fracPart.replace('.', '');
+    // Append zeroes based on the exponent.
+    var exp = parseInt(fracPartSplit[1], 10);
+    fracPart += goog.string.repeat('0', exp - fracPart.length + 1);
+  }
+
+  // Add Math.pow(10, this.maximumFractionDigits) to fracPart. Uses string ops
+  // to avoid complexity with scientific notation and overflows.
+  if (this.maximumFractionDigits_ + 1 > fracPart.length) {
+    var zeroesToAdd = this.maximumFractionDigits_ - fracPart.length;
+    fracPart = '1' + goog.string.repeat('0', zeroesToAdd) + fracPart;
+  }
+
   var fracLen = fracPart.length;
   while (fracPart.charAt(fracLen - 1) == '0' &&
          fracLen > minimumFractionDigits + 1) {
@@ -1059,7 +1090,7 @@ goog.i18n.NumberFormat.PATTERN_EXPONENT_ = 'E';
 
 
 /**
- * An plus character.
+ * A plus character.
  * @type {string}
  * @private
  */
@@ -1067,7 +1098,7 @@ goog.i18n.NumberFormat.PATTERN_PLUS_ = '+';
 
 
 /**
- * A quote character.
+ * A generic currency sign character.
  * @type {string}
  * @private
  */

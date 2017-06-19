@@ -131,6 +131,8 @@ function testSafeUrlFromDataUrl_withUnsafeType() {
   assertDataUrlIsSafe('data:video/mp4;baze64,z=', false);
   assertDataUrlIsSafe('data:video/mp4;,z=', false);
   assertDataUrlIsSafe('data:text/html,sdfsdfsdfsfsdfs;base64,anything', false);
+  // Valid base64 image URL, but with disallowed mime-type.
+  assertDataUrlIsSafe('data:image/svg+xml;base64,abc', false);
 }
 
 
@@ -254,8 +256,7 @@ function testSafeUrlSanitize_validatesUrl() {
   assertGoodUrl('p//ath');
   assertGoodUrl('p//ath?foo=bar#baz');
   assertGoodUrl('#baz');
-  // Restricted characters ('&', ':', \') after [/?#].
-  assertGoodUrl('/&');
+  // Restricted character ':' after [/?#].
   assertGoodUrl('?:');
 
   // .sanitize() works on program constants.
@@ -265,8 +266,7 @@ function testSafeUrlSanitize_validatesUrl() {
   assertBadUrl('javascript:evil();');
   assertBadUrl('javascript:evil();//\nhttp://good.com/');
   assertBadUrl('data:blah');
-  // Restricted characters before [/?#].
-  assertBadUrl('&');
+  // Restricted character before [/?#].
   assertBadUrl(':');
   // '\' is not treated like '/': no restricted characters allowed after it.
   assertBadUrl('\\:');

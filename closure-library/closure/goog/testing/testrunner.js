@@ -85,8 +85,31 @@ goog.testing.TestRunner = function() {
    * @private {boolean}
    */
   this.strict_ = true;
+
+  /**
+   * An id unique to this runner. Checked by the server during polling to
+   * verify that the page was not reloaded.
+   * @private {!string}
+   */
+  this.uniqueId_ = Math.random() + '';
 };
 
+/**
+ * The uuid is embedded in the URL search. This function allows us to mock
+ * the search in the test.
+ * @return {string}
+ */
+goog.testing.TestRunner.prototype.getSearchString = function() {
+  return window.location.search;
+};
+
+/**
+ * Returns the unique id for this test page.
+ * @return {!string}
+ */
+goog.testing.TestRunner.prototype.getUniqueId = function() {
+  return this.uniqueId_;
+};
 
 /**
  * Initializes the test runner.
@@ -329,8 +352,10 @@ goog.testing.TestRunner.prototype.writeLog = function(log) {
   for (var i = 0; i < lines.length; i++) {
     var line = lines[i];
     var color;
-    var isFailOrError = /FAILED/.test(line) || /ERROR/.test(line);
-    if (/PASSED/.test(line)) {
+    var isPassed = /PASSED/.test(line);
+    var isFailOrError =
+        /FAILED/.test(line) || /ERROR/.test(line) || /NO TESTS RUN/.test(line);
+    if (isPassed) {
       color = 'darkgreen';
     } else if (isFailOrError) {
       color = 'darkred';
@@ -388,12 +413,15 @@ goog.testing.TestRunner.prototype.writeLog = function(log) {
       // Highlight the first line as a header that indicates the test outcome.
       div.style.padding = '20px';
       div.style.marginBottom = '10px';
-      if (isFailOrError) {
+      if (isPassed) {
+        div.style.border = '1px solid ' + color;
+        div.style.backgroundColor = '#eeffee';
+      } else if (isFailOrError) {
         div.style.border = '5px solid ' + color;
         div.style.backgroundColor = '#ffeeee';
       } else {
         div.style.border = '1px solid black';
-        div.style.backgroundColor = '#eeffee';
+        div.style.backgroundColor = '#eeeeee';
       }
     }
 
@@ -427,12 +455,26 @@ goog.testing.TestRunner.prototype.log = function(s) {
 // TODO(nnaze): Properly handle serving test results when multiple test cases
 // are run.
 /**
- * @return {Object<string, !Array<string>>} A map of test names to a list of
- * test failures (if any) to provide formatted data for the test runner.
+ * @return {Object<string, !Array<!goog.testing.TestCase.IResult>>} A map of
+ * test names to a list of test failures (if any) to provide formatted data
+ * for the test runner.
  */
 goog.testing.TestRunner.prototype.getTestResults = function() {
   if (this.testCase) {
     return this.testCase.getTestResults();
+  }
+  return null;
+};
+
+
+/**
+ * Returns the test results as json.
+ * This is called by the testing infrastructure through G_testrunner.
+ * @return {?string} Tests results object.
+ */
+goog.testing.TestRunner.prototype.getTestResultsAsJson = function() {
+  if (this.testCase) {
+    return this.testCase.getTestResultsAsJson();
   }
   return null;
 };

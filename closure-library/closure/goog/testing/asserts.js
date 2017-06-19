@@ -11,11 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-goog.setTestOnly('goog.testing.JsUnitException');
-goog.provide('goog.testing.JsUnitException');
-goog.provide('goog.testing.asserts');
 
-goog.require('goog.testing.stacktrace');
+goog.provide('goog.testing.asserts');
+goog.setTestOnly();
+
+goog.require('goog.testing.JsUnitException');
 
 // TODO(user): Copied from JsUnit with some small modifications, we should
 // reimplement the asserters.
@@ -27,6 +27,7 @@ var JSUNIT_UNDEFINED_VALUE = void 0;
 var TO_STRING_EQUALITY_PREDICATE = function(var1, var2) {
   return var1.toString() === var2.toString();
 };
+var OUTPUT_NEW_LINE_THRESHOLD = 40;
 
 
 /** @typedef {function(?, ?):boolean} */
@@ -198,8 +199,15 @@ var _assert = function(comment, booleanValue, failureMessage) {
  * @private
  */
 goog.testing.asserts.getDefaultErrorMsg_ = function(expected, actual) {
-  var msg = 'Expected ' + _displayStringForValue(expected) + ' but was ' +
-      _displayStringForValue(actual);
+  var expectedDisplayString = _displayStringForValue(expected);
+  var actualDisplayString = _displayStringForValue(actual);
+  var shouldUseNewLines =
+      expectedDisplayString.length > OUTPUT_NEW_LINE_THRESHOLD ||
+      actualDisplayString.length > OUTPUT_NEW_LINE_THRESHOLD;
+  var msg = [
+    'Expected', expectedDisplayString, 'but was', actualDisplayString
+  ].join(shouldUseNewLines ? '\n' : ' ');
+
   if ((typeof expected == 'string') && (typeof actual == 'string')) {
     // Try to find a human-readable difference.
     var limit = Math.min(expected.length, actual.length);
@@ -229,8 +237,15 @@ goog.testing.asserts.getDefaultErrorMsg_ = function(expected, actual) {
             (endIndex < str.length ? '...' : '');
       };
 
-      msg += '\nDifference was at position ' + commonPrefix + '. Expected [' +
-          printString(expected) + '] vs. actual [' + printString(actual) + ']';
+      var expectedPrinted = printString(expected);
+      var expectedActual = printString(actual);
+      var shouldUseNewLinesInDiff =
+          expectedPrinted.length > OUTPUT_NEW_LINE_THRESHOLD ||
+          expectedActual.length > OUTPUT_NEW_LINE_THRESHOLD;
+      msg += '\nDifference was at position ' + commonPrefix + '. ' + [
+        'Expected', '[' + expectedPrinted + ']', 'vs. actual',
+        '[' + expectedActual + ']'
+      ].join(shouldUseNewLinesInDiff ? '\n' : ' ');
     }
   }
   return msg;
@@ -662,6 +677,12 @@ goog.testing.asserts.findDifferences = function(
         failures.push(
             path + ': Expected ' + var1.length + '-element array ' +
             'but got a ' + var2.length + '-element array');
+      } else if (typeOfVar1 == 'String') {
+        if (var1 != var2) {
+          failures.push(
+              path + ': Expected String "' + var1 + '" ' +
+              'but got "' + var2 + '"');
+        }
       } else {
         var childPath = path + (isArray ? '[%s]' : (path ? '.%s' : '%s'));
         // These type checks do not use _trueTypeOf because that does not work
@@ -1295,39 +1316,6 @@ goog.testing.asserts.raiseException = function(comment, opt_message) {
  */
 goog.testing.asserts.isArrayIndexProp_ = function(prop) {
   return (prop | 0) == prop;
-};
-
-
-
-/**
- * @param {string} comment A summary for the exception.
- * @param {?string=} opt_message A description of the exception.
- * @constructor
- * @extends {Error}
- * @final
- */
-goog.testing.JsUnitException = function(comment, opt_message) {
-  this.isJsUnitException = true;
-  this.message = (comment ? comment : '') +
-      (comment && opt_message ? '\n' : '') + (opt_message ? opt_message : '');
-  this.stackTrace = goog.testing.stacktrace.get();
-  // These fields are for compatibility with jsUnitTestManager.
-  this.comment = comment || null;
-  this.jsUnitMessage = opt_message || '';
-
-  // Ensure there is a stack trace.
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(this, goog.testing.JsUnitException);
-  } else {
-    this.stack = new Error().stack || '';
-  }
-};
-goog.inherits(goog.testing.JsUnitException, Error);
-
-
-/** @override */
-goog.testing.JsUnitException.prototype.toString = function() {
-  return this.message;
 };
 
 

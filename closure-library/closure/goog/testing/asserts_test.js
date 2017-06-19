@@ -955,6 +955,19 @@ function testAssertObjectsRoughlyEquals() {
           'was more than 0.1 away');
 }
 
+function testAssertObjectRoughlyEqualsWithStrings() {
+  // Check that objects with string properties are compared properly.
+  var obj1 = {'description': [{'colName': 'x1'}]};
+  var obj2 = {'description': [{'colName': 'x2'}]};
+  assertThrowsJsUnitException(
+      function() {
+        assertObjectRoughlyEquals(obj1, obj2, 0.00001);
+      },
+      'Expected <[object Object]> (Object)' +
+          ' but was <[object Object]> (Object)' +
+          '\n   description[0].colName: Expected String "x1" but got "x2"');
+}
+
 function testFindDifferences_equal() {
   assertNull(goog.testing.asserts.findDifferences(true, true));
   assertNull(goog.testing.asserts.findDifferences(null, null));
@@ -1143,6 +1156,37 @@ function testStringSameSuffix() {
       function() { assertEquals('xbcdefghi', 'abcdefghi'); },
       'Expected <xbcdefghi> (String) but was <abcdefghi> (String)\n' +
           'Difference was at position 0. Expected [xbc...] vs. actual [abc...]');
+}
+
+function testStringLongComparedValues() {
+  assertThrowsJsUnitException(
+      function() {
+        assertEquals(
+            'abcdefghijkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkklmnopqrstuvwxyz',
+            'abcdefghijkkkkkkkkkkkkkkkkkkkkkkkkkkkkkklmnopqrstuvwxyz');
+      },
+      'Expected\n' +
+          '<abcdefghijkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkklmnopqrstuvwxyz> (String)\n' +
+          'but was\n' +
+          '<abcdefghijkkkkkkkkkkkkkkkkkkkkkkkkkkkkkklmnopqrstuvwxyz> (String)\n' +
+          'Difference was at position 40. Expected [...kkklmnopqrstuvwxyz] vs. actual [...kklmnopqrstuvwxyz]');
+}
+
+function testStringLongDiff() {
+  assertThrowsJsUnitException(
+      function() {
+        assertEquals(
+            'abcdefghijkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkklmnopqrstuvwxyz',
+            'abc...xyz');
+      },
+      'Expected\n' +
+          '<abcdefghijkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkklmnopqrstuvwxyz> (String)\n' +
+          'but was\n' +
+          '<abc...xyz> (String)\n' +
+          'Difference was at position 3. Expected\n' +
+          '[...bcdefghijkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkklmnopqrstuvwxy...]\n' +
+          'vs. actual\n' +
+          '[...bc...xy...]');
 }
 
 function testStringDissimilarShort() {
