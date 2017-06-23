@@ -11,6 +11,7 @@ pt.ui.Component = function(opt_arg1) {
   var domHelper;
   var className;
   var text;
+  var html;
   if (opt_arg1 instanceof goog.dom.DomHelper) {
     domHelper = opt_arg1;
   } else if (goog.isString(opt_arg1)) {
@@ -19,10 +20,12 @@ pt.ui.Component = function(opt_arg1) {
     domHelper = opt_arg1.dom; 
     className = opt_arg1.css;
     text = opt_arg1.text;
+    html = opt_arg1.html;
   }
   pt.ui.Component.base(this, 'constructor', domHelper);
   this.className_ = className;
   this.text_ = text;
+  this.html_ = html;
 };
 goog.inherits(pt.ui.Component, goog.ui.Component);
 
@@ -32,6 +35,6 @@ pt.ui.Component.prototype.createDom = function() {
   this.setElementInternal(this.getDomHelper().createDom(
       goog.dom.TagName.DIV, {
     className: this.className_,
-    innerHTML: this.text_ || ''
+    innerHTML: this.html_ || this.text_ || ''
   }));
 };
