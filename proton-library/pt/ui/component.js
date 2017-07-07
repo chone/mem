@@ -26,6 +26,8 @@ pt.ui.Component = function(opt_arg1) {
   this.className_ = className;
   this.text_ = text;
   this.html_ = html;
+  this.$ = {};
+  this._ = {};
 };
 goog.inherits(pt.ui.Component, goog.ui.Component);
 
@@ -38,3 +40,15 @@ pt.ui.Component.prototype.createDom = function() {
     innerHTML: this.html_ || this.text_ || ''
   }));
 };
+
+/** @override */
+pt.ui.Component.prototype.disposeInternal = function() {
+  pt.ui.Component.base('disposeInternal');
+  this.className_ = null;
+  this.text_ = null;
+  this.html_ = null;
+  this.$ = null;
+  this._ = null;
+};
+
+
