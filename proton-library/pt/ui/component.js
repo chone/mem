@@ -2,6 +2,7 @@
 goog.provide('pt.ui.Component');
 
 goog.require('goog.ui.Component');
+goog.require('goog.object');
 
 
 /**
@@ -41,9 +42,10 @@ pt.ui.Component.prototype.createDom = function() {
   }));
 };
 
+
 /** @override */
 pt.ui.Component.prototype.disposeInternal = function() {
-  pt.ui.Component.base('disposeInternal');
+  pt.ui.Component.base(this, 'disposeInternal');
   this.className_ = null;
   this.text_ = null;
   this.html_ = null;
