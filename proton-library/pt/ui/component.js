@@ -49,6 +49,10 @@ pt.ui.Component.prototype.disposeInternal = function() {
   this.className_ = null;
   this.text_ = null;
   this.html_ = null;
+  goog.object.forEach(this.$, function(elem) {
+    goog.dom.removeNode(elem);
+  });
+  goog.object.clear(this.$);
   this.$ = null;
   this._ = null;
 };
