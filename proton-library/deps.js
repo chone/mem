@@ -7,6 +7,7 @@ goog.addDependency('../../../proton-library/pt/ui/component.js', ['pt.ui.Compone
 goog.addDependency('../../../proton-library/pt/ui/control.js', ['pt.ui.Control'], ['goog.ui.Control', 'goog.ui.ControlRenderer'], false);
 goog.addDependency('../../../proton-library/pt/ui/fastclick.js', ['pt.ui.FastClick'], [], false);
 goog.addDependency('../../../proton-library/pt/ui/menu.js', ['pt.ui.Menu'], ['goog.ui.ContainerRenderer', 'goog.ui.Menu', 'goog.ui.MenuRenderer'], false);
+goog.addDependency('../../../proton-library/pt/ui/page.js', ['pt.ui.Page'], ['goog.ui.Container'], true);
 goog.addDependency('../../../proton-library/pt/ui/selectable.js', ['pt.ui.Selectable'], ['goog.dom', 'goog.dom.classlist', 'goog.events', 'goog.events.EventType'], false);
 goog.addDependency('../../../proton-library/pt/ui/tab.js', ['pt.ui.Tab'], ['goog.ui.ControlRenderer', 'goog.ui.Tab'], false);
 goog.addDependency('../../../proton-library/pt/ui/tabs.js', ['pt.ui.Tabs'], ['goog.ui.ContainerRenderer', 'goog.ui.TabBar', 'goog.ui.TabBarRenderer'], false);
