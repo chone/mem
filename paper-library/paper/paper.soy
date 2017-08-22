@@ -1,0 +1,38 @@
+
+{namespace paper}
+
+
+/**
+ * @param? content
+ * @param? opened
+ * @param? id
+ * @param? duration
+ * @param? fitBottom
+ * @param? capsule 
+ */
+{template .toast}
+  <div 
+    {if $id}
+      {sp}id="{$id}"
+    {/if}
+      {sp}class="{css paper-toast}
+    {if $opened}
+      {sp}{css paper-toast-open}
+    {/if}
+    {if $fitBottom}
+      {sp}{css paper-toast-fit-bottom}
+    {/if}
+    {if $capsule}
+      {sp}{css paper-toast-capsule}
+    {/if}
+    "
+    {if $duration >= 0}
+      {sp}duration="{$duration}"  
+    {/if}
+  >
+    {if $content}
+      {$content |noAutoescape}
+    {/if}
+  </div>
+{/template}
+

@@ -1,0 +1,39 @@
+
+.paper-toast {
+  display: block;
+  position: fixed;
+  background-color: #323232;
+  color: #f1f1f1;
+  min-height: 48px;
+  min-width: 288px;
+  padding: 16px 24px;
+  box-sizing: border-box;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  border-radius: 2px;
+  margin: 12px;
+  font-size: 14px;
+  cursor: default;
+  -webkit-transition: -webkit-transform 0.3s, opacity 0.3s;
+  transition: transform 0.3s, opacity 0.3s;
+  opacity: 0;
+  -webkit-transform: translateY(100px);
+  transform: translateY(100px);
+}
+
+.paper-toast-capsule {
+  border-radius: 24px;
+}
+
+.paper-toast-fit-bottom {
+  width: 100%;
+  min-width: 0;
+  border-radius: 0;
+  margin: 0;
+}
+
+.paper-toast-opened {
+  opacity: 1;
+  -webkit-transform: translateY(0px);
+  transform: translateY(0px);
+}
+

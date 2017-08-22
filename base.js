@@ -17,6 +17,7 @@
   if (basePath) {
     writeScript(basePath + 'closure-library/closure/goog/base.js');
     writeScript(basePath + 'proton-library/deps.js');
+    writeScript(basePath + 'paper-library/deps.js');
     writeScript(basePath + '../src/deps.js');
   } else {
     document.write('sdk的base.js文件被改名');
