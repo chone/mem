@@ -6,8 +6,28 @@ var cmd = require('./lib/cmd');
 var style = require('./lib/style');
 var script = require('./lib/script');
 var crc32 = require('./lib/crc32');
+var commander = require('commander');
 
 var namespace = process.argv[2];
+
+commander
+  .version('0.1.0')
+  .arguments('<ns>')
+  .action(function(ns) {
+    namespace = ns;
+  })
+  .option('--define [value]', 
+    'Override the value of a variable annotated @define', 
+    function(val, memo) {
+      memo.push(val);
+      return memo;
+    }, [])
+  .parse(process.argv);
+
+if (!namespace) {
+  console.error('no command given!');
+  process.exit(1);
+}
 
 var compile = function() {
     if (isMixin()) {
@@ -73,7 +93,7 @@ function wrap() {
 }
 
 function jsc(fn) {
-  script.compile(namespace, fn, error(fn));
+  script.compile(namespace, commander.define, fn, error(fn));
 }
 
 function jsw(fn) {
@@ -81,7 +101,7 @@ function jsw(fn) {
 }
 
 function jtc(fn) {
-  script.compile('mem.widget.styleinjecter', fn, error(fn));
+  script.compile('mem.widget.styleinjecter', commander.defin, fn, error(fn));
 }
 
 function csc(fn) {
