@@ -32,6 +32,7 @@ pt.navigation.Navigator.prototype.handleNavigationEvent_ = function(e) {
 
 
 pt.navigation.Navigator.prototype.request_ = function(b) {
+  /*
   for (var d = 0; d < this.requestHandlers.length; d++) {
     var e = this.requestHandlers[d];
     var h = e.handler.call(e.context, b);
@@ -53,4 +54,5 @@ pt.navigation.Navigator.prototype.request_ = function(b) {
     }
   }
   return null
+  */
 };
