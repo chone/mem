@@ -22,6 +22,7 @@ commander
       memo.push(val);
       return memo;
     }, [])
+  .option('--jsonly', 'Compile Javascript Only')
   .parse(process.argv);
 
 if (!namespace) {
@@ -140,9 +141,7 @@ function isCompileCssOnly() {
 }
 
 function isCompileJsOnly() {
-  return process.argv.some(function(item) {
-      return item == '-jsonly';
-      });
+  return !!commander.jsonly;
 }
 
 function mixin(injecter, css, js) {
