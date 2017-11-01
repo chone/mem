@@ -51,7 +51,7 @@ pt.events.TapHandler.prototype.handleTouchEnd_ = function(e) {
     var offsetY = this.y_ - e.clientY;
     if (Math.abs(offsetX) < 4 && Math.abs(offsetY) < 4) {
       e.preventDefault();
-      e.type = pt.TapHandler.EventType.TAP;
+      e.type = pt.events.TapHandler.EventType.TAP;
       this.dispatchEvent(e);
     }
     this.x_ = 0;
