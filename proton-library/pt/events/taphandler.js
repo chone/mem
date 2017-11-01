@@ -1,4 +1,3 @@
-
 goog.provide('pt.events.TapHandler');
 
 goog.require('goog.events');
@@ -37,6 +36,8 @@ pt.events.TapHandler.EventType = {
 pt.events.TapHandler.prototype.handleTouchStart_ = function(e) {
   this.x_ = e.clientX;
   this.y_ = e.clientY;
+  this.target_ = e.target;
+  this.startTime_ = (new Date()).getTime();
 };
 
 
@@ -44,14 +45,18 @@ pt.events.TapHandler.prototype.handleTouchStart_ = function(e) {
  * @private
  */
 pt.events.TapHandler.prototype.handleTouchEnd_ = function(e) {
-  var offsetX = this.x_ - e.clientX;
-  var offsetY = this.y_ - e.clientY;
-  if (Math.abs(offsetX) < 4 && Math.abs(offsetY) < 4) {
-    e.preventDefault();
-    this.dispatchEvent(pt.events.TapHandler.EventType.TAP);
+  this.endTime_ = (new Date()).getTime();
+  if(this.endTime_ - this.startTime_ < 200){
+    var offsetX = this.x_ - e.clientX;
+    var offsetY = this.y_ - e.clientY;
+    if (Math.abs(offsetX) < 4 && Math.abs(offsetY) < 4) {
+      e.preventDefault();
+      e.type = pt.TapHandler.EventType.TAP;
+      this.dispatchEvent(e);
+    }
+    this.x_ = 0;
+    this.y_ = 0;
   }
-  this.x_ = 0;
-  this.y_ = 0;
 };
 
 
@@ -62,6 +67,5 @@ pt.events.TapHandler.prototype.handleTouchMove_ = function(e) {
   this.x_ = e.clientX;
   this.y_ = e.clientY;
 };
-
 
 
