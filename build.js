@@ -23,6 +23,7 @@ commander
       return memo;
     }, [])
   .option('--jsonly', 'Compile Javascript Only')
+  .option('--cssonly', 'Compile Styles Only')
   .parse(process.argv);
 
 if (!namespace) {
@@ -135,9 +136,7 @@ function isMixin() {
 }
 
 function isCompileCssOnly() {
-  return process.argv.some(function(item) {
-      return item == '-cssonly';
-      });
+  return !!commander.cssonly;
 }
 
 function isCompileJsOnly() {
