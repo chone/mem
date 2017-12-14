@@ -24,6 +24,7 @@ commander
     }, [])
   .option('--jsonly', 'Compile Javascript Only')
   .option('--cssonly', 'Compile Styles Only')
+  .option('--imageprefix [path]', 'Compile image prefix')
   .parse(process.argv);
 
 if (!namespace) {
@@ -107,7 +108,7 @@ function jtc(fn) {
 }
 
 function csc(fn) {
-  style.compile(namespace, fn, error(fn));
+  style.compile(namespace, fn, error(fn), commander.imageprefix);
 }
 
 function csw(fn) {
