@@ -78,7 +78,7 @@ goog.html.SafeHtml = function() {
   /**
    * A type marker used to implement additional run-time type checking.
    * @see goog.html.SafeHtml#unwrap
-   * @const {!Object}
+   * @const
    * @private
    */
   this.SAFE_HTML_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ =
@@ -320,7 +320,7 @@ goog.html.SafeHtml.NOT_ALLOWED_TAG_NAMES_ = goog.object.createSet(
 
 /**
  * @typedef {string|number|goog.string.TypedString|
- *     goog.html.SafeStyle.PropertyMap|undefined}
+ *     goog.html.SafeStyle.PropertyMap}
  */
 goog.html.SafeHtml.AttributeValue;
 
@@ -927,7 +927,7 @@ goog.html.SafeHtml.stringifyAttributes = function(tagName, opt_attributes) {
 
 
 /**
- * @param {!Object<string, ?goog.html.SafeHtml.AttributeValue>} fixedAttributes
+ * @param {!Object<string, string>} fixedAttributes
  * @param {!Object<string, string>} defaultAttributes
  * @param {?Object<string, ?goog.html.SafeHtml.AttributeValue>=} opt_attributes
  *     Optional attributes passed to create*().

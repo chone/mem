@@ -57,7 +57,6 @@ goog.inherits(goog.ui.MenuBase, goog.ui.Popup);
 
 /**
  * Events fired by the Menu
- * @const
  */
 goog.ui.MenuBase.Events = {};
 

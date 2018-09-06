@@ -34,7 +34,6 @@ goog.require('goog.events.EventHandler');
 goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.string');
-goog.require('goog.testing.TestCase');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.ServerChart');
 goog.require('goog.ui.TableSorter');
@@ -90,7 +89,7 @@ goog.testing.MultiTestRunner = function(opt_domHelper) {
   /**
    * Array of test result objects returned from G_testRunner.getTestResults for
    * each individual test run.
-   * @private {!Array<!Object<string,!Array<!goog.testing.TestCase.IResult>>>}
+   * @private {!Array<!Object<string,!Array<string>>>}
    */
   this.allTestResults_ = [];
 };
@@ -570,7 +569,7 @@ goog.testing.MultiTestRunner.prototype.getFailureReports = function() {
 
 /**
  * Returns list of each frame's test results.
- * @return {!Array<!Object<string,!Array<!goog.testing.TestCase.IResult>>>}
+ * @return {!Array<!Object<string,!Array<string>>>}
  */
 goog.testing.MultiTestRunner.prototype.getAllTestResults = function() {
   return this.allTestResults_;
@@ -1257,7 +1256,7 @@ goog.testing.MultiTestRunner.TestFrame = function(
   /**
    * Object to hold test results. Key is test method or file name (depending on
    * failure mode) and the value is an array of failure messages.
-   * @private {!Object<string,!Array<!goog.testing.TestCase.IResult>>}
+   * @private {!Object<string,!Array<string>>}
    */
   this.testResults_ = {};
 };
@@ -1424,9 +1423,9 @@ goog.testing.MultiTestRunner.TestFrame.prototype.getReport = function() {
 
 
 /**
- * @return {!Object<string,!Array<!goog.testing.TestCase.IResult>>} The results
- *     per individual test in the file. Key is the test filename concatenated
- *     with the test name, and the array holds failures.
+ * @return {!Object<string,!Array<string>>} The results per individual test in
+ *     the file. Key is the test filename concatenated with the test name, and
+ *     the array holds failures.
  */
 goog.testing.MultiTestRunner.TestFrame.prototype.getTestResults = function() {
   var results = {};
@@ -1519,11 +1518,8 @@ goog.testing.MultiTestRunner.TestFrame.prototype.checkForCompletion_ =
         if (goog.object.isEmpty(this.testResults_)) {
           // Existence of a report is a signal of a test failure by the test
           // runner.
-          this.testResults_[this.testFile_] = this.isSuccess_ ? [] : [{
-            'message': this.report_,
-            'source': this.testFile_,
-            'stacktrace': ''
-          }];
+          this.testResults_[this.testFile_] =
+              this.isSuccess_ ? [] : [this.report_];
         }
         this.runTime_ = tr['getRunTime']();
         this.numFilesLoaded_ = tr['getNumFilesLoaded']();
@@ -1536,8 +1532,7 @@ goog.testing.MultiTestRunner.TestFrame.prototype.checkForCompletion_ =
   if (goog.now() - this.lastStateTime_ > this.timeoutMs_) {
     this.report_ = this.testFile_ + ' timed out  ' +
         goog.testing.MultiTestRunner.STATES[this.currentState_];
-    this.testResults_[this.testFile_] =
-        [{'message': this.report_, 'source': this.testFile_, 'stacktrace': ''}];
+    this.testResults_[this.testFile_] = [this.report_];
     this.isSuccess_ = false;
     this.finish_();
     return;

@@ -24,7 +24,6 @@ goog.require('goog.dom');
 goog.require('goog.html.SafeHtml');
 goog.require('goog.html.SafeUrl');
 goog.require('goog.html.sanitizer.HtmlSanitizer');
-goog.require('goog.html.sanitizer.HtmlSanitizer.Builder');
 goog.require('goog.html.sanitizer.TagWhitelist');
 goog.require('goog.html.sanitizer.unsafe');
 goog.require('goog.html.testing');
@@ -74,16 +73,6 @@ function assertSanitizedHtml(originalHtml, expectedHtml, opt_sanitizer) {
     if (!isIE8()) {
       throw err;
     }
-  }
-  if (!opt_sanitizer) {
-    // Retry with raw sanitizer created without the builder.
-    assertSanitizedHtml(
-        originalHtml, expectedHtml, new goog.html.sanitizer.HtmlSanitizer());
-    // Retry with an explicitly passed in Builder.
-    var builder = new goog.html.sanitizer.HtmlSanitizer.Builder();
-    assertSanitizedHtml(
-        originalHtml, expectedHtml,
-        new goog.html.sanitizer.HtmlSanitizer(builder));
   }
 }
 
@@ -137,18 +126,6 @@ function testHtmlSanitizeSafeHtml() {
 function testDefaultCssSanitizeImage() {
   var html = '<div></div>';
   assertSanitizedHtml(html, html);
-}
-
-
-function testBuilderCanOnlyBeUsedOnce() {
-  var builder = new goog.html.sanitizer.HtmlSanitizer.Builder();
-  var sanitizer = builder.build();
-  assertThrows(function() {
-    builder.build();
-  });
-  assertThrows(function() {
-    new goog.html.sanitizer.HtmlSanitizer(builder);
-  });
 }
 
 
@@ -1474,30 +1451,4 @@ function testOnlyAllowAttributeRefineThrows() {
   assertThrows(function() {
     builder.onlyAllowAttributes(['alt']);
   });
-}
-
-
-function testUrlWithCredentials() {
-  if (isIE8() || isIE9()) {
-    return;
-  }
-  // IE has trouble getting and setting URL attributes with credentials. Both
-  // HTMLSanitizer and assertHtmlMatches are affected by the bug, hence the use
-  // of plain string matching.
-  var url = 'http://foo:bar@example.com';
-  var input = '<div style="background-image: url(\'' + url + '\');">' +
-      '<img src="' + url + '" /></div>';
-  var expectedIE = '<div style="background-image: url(&quot;' + url +
-      '&quot;);"><img src="' + url + '" /></div>';
-  var sanitizer =
-      new goog.html.sanitizer.HtmlSanitizer.Builder()
-          .withCustomNetworkRequestUrlPolicy(goog.html.SafeUrl.sanitize)
-          .allowCssStyles()
-          .build();
-  if (goog.userAgent.EDGE_OR_IE) {
-    assertEquals(
-        expectedIE, goog.html.SafeHtml.unwrap(sanitizer.sanitize(input)));
-  } else {
-    assertSanitizedHtml(input, input, sanitizer);
-  }
 }

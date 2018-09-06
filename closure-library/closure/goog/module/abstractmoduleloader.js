@@ -21,7 +21,6 @@ goog.provide('goog.module.AbstractModuleLoader');
 
 /** @suppress {extraRequire} */
 goog.require('goog.module');
-goog.require('goog.module.ModuleInfo');
 
 
 /**

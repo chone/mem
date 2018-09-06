@@ -39,7 +39,6 @@ goog.require('goog.net.XhrIo');
 goog.require('goog.net.XmlHttp');
 goog.require('goog.net.streams.Base64PbStreamParser');
 goog.require('goog.net.streams.JsonStreamParser');
-goog.require('goog.net.streams.PbJsonStreamParser');
 goog.require('goog.net.streams.PbStreamParser');
 goog.require('goog.string');
 goog.require('goog.userAgent');
@@ -48,7 +47,6 @@ goog.scope(function() {
 
 var Base64PbStreamParser =
     goog.module.get('goog.net.streams.Base64PbStreamParser');
-var PbJsonStreamParser = goog.module.get('goog.net.streams.PbJsonStreamParser');
 
 
 /**
@@ -224,9 +222,6 @@ goog.net.streams.XhrStreamReader.prototype.getParserByResponseHeader_ =
   contentType = contentType.toLowerCase();
 
   if (goog.string.startsWith(contentType, 'application/json')) {
-    if (goog.string.startsWith(contentType, 'application/json+protobuf')) {
-      return new PbJsonStreamParser();
-    }
     return new goog.net.streams.JsonStreamParser();
   }
 
@@ -304,7 +299,7 @@ goog.net.streams.XhrStreamReader.prototype.readyStateChangeHandler_ = function(
     event) {
   var xhr = /** @type {goog.net.XhrIo} */ (event.target);
 
-
+  /** @preserveTry */
   try {
     if (xhr == this.xhr_) {
       this.onReadyStateChanged_();

@@ -120,8 +120,7 @@ ForwardChannelRequestPool.prototype.applyClientProtocol = function(
   }
 
   if (goog.string.contains(clientProtocol, 'spdy') ||
-      goog.string.contains(clientProtocol, 'quic') ||
-      goog.string.contains(clientProtocol, 'h2')) {
+      goog.string.contains(clientProtocol, 'quic')) {
     this.maxSize_ = this.maxPoolSizeConfigured_;
     this.requestPool_ = new goog.structs.Set();
     if (this.request_) {

@@ -51,6 +51,14 @@ goog.ui.Css3MenuButtonRenderer = function() {
   goog.ui.MenuButtonRenderer.call(this);
 };
 goog.inherits(goog.ui.Css3MenuButtonRenderer, goog.ui.MenuButtonRenderer);
+
+
+/**
+ * The singleton instance of this renderer class.
+ * @type {goog.ui.Css3MenuButtonRenderer?}
+ * @private
+ */
+goog.ui.Css3MenuButtonRenderer.instance_ = null;
 goog.addSingletonGetter(goog.ui.Css3MenuButtonRenderer);
 
 

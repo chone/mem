@@ -281,12 +281,14 @@ goog.ui.Prompt.prototype.createDom = function() {
   var cls = this.getClass();
 
   // add input box to the content
+  var attrs = {
+    'className': goog.getCssName(cls, 'userInput'),
+    'value': this.defaultValue_
+  };
   if (this.rows_ == 1) {
     // If rows == 1 then use an input element.
-    this.userInputEl_ = this.getDomHelper().createDom(goog.dom.TagName.INPUT, {
-      'className': goog.getCssName(cls, 'userInput'),
-      'value': this.defaultValue_
-    });
+    this.userInputEl_ =
+        this.getDomHelper().createDom(goog.dom.TagName.INPUT, attrs);
     this.userInputEl_.type = goog.dom.InputType.TEXT;
     if (this.cols_) {
       this.userInputEl_.size = this.cols_;
@@ -294,10 +296,7 @@ goog.ui.Prompt.prototype.createDom = function() {
   } else {
     // If rows > 1 then use a textarea.
     this.userInputEl_ =
-        this.getDomHelper().createDom(goog.dom.TagName.TEXTAREA, {
-          'className': goog.getCssName(cls, 'userInput'),
-          'value': this.defaultValue_
-        });
+        this.getDomHelper().createDom(goog.dom.TagName.TEXTAREA, attrs);
     this.userInputEl_.rows = this.rows_;
     if (this.cols_) {
       this.userInputEl_.cols = this.cols_;

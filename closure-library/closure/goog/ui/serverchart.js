@@ -43,7 +43,6 @@ goog.require('goog.Uri');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.TagName');
-goog.require('goog.dom.safe');
 goog.require('goog.events.Event');
 goog.require('goog.string');
 goog.require('goog.ui.Component');
@@ -336,8 +335,7 @@ goog.ui.ServerChart.prototype.createDom = function() {
  * @override
  */
 goog.ui.ServerChart.prototype.decorateInternal = function(img) {
-  goog.dom.safe.setImageSrc(
-      /** @type {!HTMLImageElement} */ (img), this.getUri().toString());
+  img.src = this.getUri();
   this.setElementInternal(img);
 };
 
@@ -347,9 +345,7 @@ goog.ui.ServerChart.prototype.decorateInternal = function(img) {
  */
 goog.ui.ServerChart.prototype.updateChart = function() {
   if (this.getElement()) {
-    goog.dom.safe.setImageSrc(
-        /** @type {!HTMLImageElement} */ (this.getElement()),
-        this.getUri().toString());
+    this.getElement().src = this.getUri();
   }
 };
 

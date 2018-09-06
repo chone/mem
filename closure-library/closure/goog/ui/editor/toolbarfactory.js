@@ -429,5 +429,7 @@ goog.ui.editor.ToolbarFactory.createContent_ = function(
     caption = goog.string.Unicode.NBSP;
   }
   return (opt_domHelper || goog.dom.getDomHelper())
-      .createDom(goog.dom.TagName.DIV, opt_classNames, caption);
+      .createDom(
+          goog.dom.TagName.DIV,
+          opt_classNames ? {'class': opt_classNames} : null, caption);
 };

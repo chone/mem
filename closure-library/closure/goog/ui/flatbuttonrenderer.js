@@ -64,10 +64,11 @@ goog.ui.FlatButtonRenderer.CSS_CLASS = goog.getCssName('goog-flat-button');
  */
 goog.ui.FlatButtonRenderer.prototype.createDom = function(button) {
   var classNames = this.getClassNames(button);
+  var attributes = {
+    'class': goog.ui.INLINE_BLOCK_CLASSNAME + ' ' + classNames.join(' ')
+  };
   var element = button.getDomHelper().createDom(
-      goog.dom.TagName.DIV,
-      goog.ui.INLINE_BLOCK_CLASSNAME + ' ' + classNames.join(' '),
-      button.getContent());
+      goog.dom.TagName.DIV, attributes, button.getContent());
   this.setTooltip(element, button.getTooltip());
   return element;
 };

@@ -39,7 +39,6 @@ goog.require('goog.json.Serializer');
  * @constructor
  * @implements {goog.json.Processor}
  * @final
- * @deprecated Use goog.json.NativeJsonProcessor.
  */
 goog.json.EvalJsonProcessor = function(opt_replacer, opt_useUnsafeParsing) {
   /**

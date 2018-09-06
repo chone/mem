@@ -27,7 +27,6 @@ var MultiTestRunner = goog.require('goog.testing.MultiTestRunner');
 var TestCase = goog.require('goog.testing.TestCase');
 var jsunit = goog.require('goog.testing.jsunit');
 var testSuite = goog.require('goog.testing.testSuite');
-var json = goog.require('goog.json');
 
 var testRunner;
 
@@ -120,10 +119,6 @@ var testObj = {
     // containing "testRunAllTests".
     window['G_testRunner']['getTestResults'] = function() {
       return allResults;
-    };
-
-    window['G_testRunner']['getTestResultsAsJson'] = function() {
-      return json.serialize(allResults);
     };
 
     return failurePromise.then(function(failures) {

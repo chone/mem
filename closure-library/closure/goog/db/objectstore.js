@@ -24,7 +24,6 @@ goog.require('goog.async.Deferred');
 goog.require('goog.db.Cursor');
 goog.require('goog.db.Error');
 goog.require('goog.db.Index');
-goog.require('goog.db.KeyRange');
 goog.require('goog.debug');
 goog.require('goog.events');
 
@@ -99,9 +98,7 @@ goog.db.ObjectStore.prototype.insert_ = function(fn, msg, value, opt_key) {
     d.errback(goog.db.Error.fromException(ex, msg));
     return d;
   }
-  request.onsuccess = function(ev) {
-    d.callback(ev.target.result);
-  };
+  request.onsuccess = function(ev) { d.callback(); };
   request.onerror = function(ev) {
     msg += goog.debug.deepExpose(value);
     if (opt_key) {
@@ -149,20 +146,17 @@ goog.db.ObjectStore.prototype.add = function(value, opt_key) {
  * Removes an object from the store. No-op if there is no object present with
  * the given key.
  *
- * @param {IDBKeyType|!goog.db.KeyRange} keyOrRange The key or range to remove
- *     objects under.
+ * @param {IDBKeyType} key The key to remove objects under.
  * @return {!goog.async.Deferred} The deferred remove request.
  */
-goog.db.ObjectStore.prototype.remove = function(keyOrRange) {
+goog.db.ObjectStore.prototype.remove = function(key) {
   var d = new goog.async.Deferred();
   var request;
   try {
-    request = this.store_['delete'](
-        keyOrRange instanceof goog.db.KeyRange ? keyOrRange.range() :
-                                                 keyOrRange);
+    request = this.store_['delete'](key);
   } catch (err) {
     var msg = 'removing from ' + this.getName() + ' with key ' +
-        goog.debug.deepExpose(keyOrRange);
+        goog.debug.deepExpose(key);
     d.errback(goog.db.Error.fromException(err, msg));
     return d;
   }
@@ -170,7 +164,7 @@ goog.db.ObjectStore.prototype.remove = function(keyOrRange) {
   var self = this;
   request.onerror = function(ev) {
     var msg = 'removing from ' + self.getName() + ' with key ' +
-        goog.debug.deepExpose(keyOrRange);
+        goog.debug.deepExpose(key);
     d.errback(goog.db.Error.fromRequest(ev.target, msg));
   };
   return d;
@@ -226,10 +220,11 @@ goog.db.ObjectStore.prototype.getAll = function(opt_range, opt_direction) {
   }
 
   var result = [];
-  goog.events.listen(cursor, goog.db.Cursor.EventType.NEW_DATA, function() {
-    result.push(cursor.getValue());
-    cursor.next();
-  });
+  var key =
+      goog.events.listen(cursor, goog.db.Cursor.EventType.NEW_DATA, function() {
+        result.push(cursor.getValue());
+        cursor.next();
+      });
 
   goog.events.listenOnce(
       cursor,
@@ -308,8 +303,7 @@ goog.db.ObjectStore.prototype.clear = function() {
  * {@link goog.db.UpgradeNeededCallback}.
  *
  * @param {string} name Name of the index to create.
- * @param {string|!Array<string>} keyPath Attribute or array of attributes to
- *     index on.
+ * @param {string} keyPath Attribute to index on.
  * @param {!Object=} opt_parameters Optional parameters object. The only
  *     available option is unique, which defaults to false. If unique is true,
  *     the index will enforce that there is only ever one object in the object

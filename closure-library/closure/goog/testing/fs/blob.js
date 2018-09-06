@@ -184,6 +184,7 @@ goog.testing.fs.Blob.prototype.appendByte_ = function(data) {
  * @private
  */
 goog.testing.fs.Blob.prototype.appendUint8_ = function(data) {
+  var result = [];
   for (var i = 0; i < data.length; i++) {
     this.data_.push(data[i]);
   }

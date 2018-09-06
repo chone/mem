@@ -508,7 +508,6 @@ goog.testing.AsyncTestCase.prototype.runTests = function() {
   this.hookAssert_();
   this.hookOnError_();
 
-  goog.testing.TestCase.currentTestName = null;
   this.setNextStep_(this.doSetUpPage_, 'setUpPage');
   // We are an entry point, so we pump.
   this.pump_();
@@ -566,7 +565,7 @@ goog.testing.AsyncTestCase.prototype.dbgLog_ = function(message) {
  * @private
  */
 goog.testing.AsyncTestCase.prototype.doTopOfStackAsyncError_ = function(opt_e) {
-
+  /** @preserveTry */
   try {
     this.doAsyncError(opt_e);
   } catch (e) {
@@ -635,7 +634,7 @@ goog.testing.AsyncTestCase.prototype.hookAssert_ = function() {
     this.origFail_ = fail;
     var self = this;
     _assert = function() {
-
+      /** @preserveTry */
       try {
         self.origAssert_.apply(this, arguments);
       } catch (e) {
@@ -644,7 +643,7 @@ goog.testing.AsyncTestCase.prototype.hookAssert_ = function() {
       }
     };
     fail = function() {
-
+      /** @preserveTry */
       try {
         self.origFail_.apply(this, arguments);
       } catch (e) {
@@ -758,13 +757,13 @@ goog.testing.AsyncTestCase.prototype.setNextStep_ = function(func, name) {
  * @private
  */
 goog.testing.AsyncTestCase.prototype.callTopOfStackFunc_ = function(func) {
-
+  /** @preserveTry */
   try {
     func.call(this);
     return {controlBreakingExceptionThrown: false, message: ''};
   } catch (e) {
     this.dbgLog_('Caught exception in callTopOfStackFunc_');
-
+    /** @preserveTry */
     try {
       this.doAsyncError(e);
       return {controlBreakingExceptionThrown: false, message: ''};
@@ -848,8 +847,6 @@ goog.testing.AsyncTestCase.prototype.doIteration_ = function() {
   this.expectedSignalCount_ = 0;
   this.receivedSignalCount_ = 0;
   this.activeTest = this.next();
-  goog.testing.TestCase.currentTestName =
-      this.activeTest ? this.activeTest.name : null;
   if (this.activeTest && this.running) {
     this.result_.runCount++;
     // If this test should be marked as having failed, doIteration will go

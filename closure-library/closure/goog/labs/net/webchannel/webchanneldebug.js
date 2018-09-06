@@ -179,9 +179,9 @@ WebChannelDebug.prototype.redactResponse_ = function(responseText) {
   if (!responseText) {
     return null;
   }
-
+  /** @preserveTry */
   try {
-    var responseArray = JSON.parse(responseText);
+    var responseArray = goog.json.unsafeParse(responseText);
     if (responseArray) {
       for (var i = 0; i < responseArray.length; i++) {
         if (goog.isArray(responseArray[i])) {

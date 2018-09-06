@@ -20,7 +20,9 @@
 
 
 goog.provide('goog.Disposable');
+/** @suppress {extraProvide} */
 goog.provide('goog.dispose');
+/** @suppress {extraProvide} */
 goog.provide('goog.disposeAll');
 
 goog.require('goog.disposable.IDisposable');
@@ -36,13 +38,6 @@ goog.require('goog.disposable.IDisposable');
  * @implements {goog.disposable.IDisposable}
  */
 goog.Disposable = function() {
-  /**
-   * If monitoring the goog.Disposable instances is enabled, stores the creation
-   * stack trace of the Disposable instance.
-   * @type {string|undefined}
-   */
-  this.creationStack;
-
   if (goog.Disposable.MONITORING_MODE != goog.Disposable.MonitoringMode.OFF) {
     if (goog.Disposable.INCLUDE_STACK_ON_CREATION) {
       this.creationStack = new Error().stack;
@@ -142,6 +137,14 @@ goog.Disposable.prototype.disposed_ = false;
  * @private
  */
 goog.Disposable.prototype.onDisposeCallbacks_;
+
+
+/**
+ * If monitoring the goog.Disposable instances is enabled, stores the creation
+ * stack trace of the Disposable instance.
+ * @const {string}
+ */
+goog.Disposable.prototype.creationStack;
 
 
 /**

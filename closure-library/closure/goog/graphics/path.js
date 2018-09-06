@@ -22,7 +22,6 @@ goog.provide('goog.graphics.Path');
 goog.provide('goog.graphics.Path.Segment');
 
 goog.require('goog.array');
-goog.require('goog.graphics.AffineTransform');
 goog.require('goog.math');
 
 

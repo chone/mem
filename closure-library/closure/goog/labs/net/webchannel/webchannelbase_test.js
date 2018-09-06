@@ -242,9 +242,6 @@ function setUp() {
 
   mockClock = new goog.testing.MockClock(true);
   channel = new goog.labs.net.webChannel.WebChannelBase('1');
-  // restore channel-test for tests that rely on the channel-test state
-  channel.backgroundChannelTest_ = false;
-
   gotError = false;
 
   handler = new goog.labs.net.webChannel.WebChannelBase.Handler();
@@ -775,14 +772,14 @@ function setFailFastWhileWaitingForRetry() {
   assertNull(getSingleForwardRequest());
   assertEquals(1, channel.forwardChannelRetryCount_);
 
-  // We get the error immediately before starting to ping google.com.
   assertTrue(gotError);
   assertEquals(0, deliveredMaps.length);
-
-  // Simulate that timing out. We should not get another error.
+  // We get the error immediately before starting to ping google.com.
+  // Simulate that timing out. We should get a network error in addition to the
+  // initial failure.
   gotError = false;
   mockClock.tick(goog.labs.net.webChannel.netUtils.NETWORK_TIMEOUT);
-  assertFalse('Extra error after network ping timed out.', gotError);
+  assertTrue('No error after network ping timed out.', gotError);
 
   // Make sure no more retry timers are firing.
   mockClock.tick(ALL_DAY_MS);
@@ -852,13 +849,12 @@ function setFailFastWhileRetryXhrIsInFlight() {
   assertNull(getSingleForwardRequest());
   assertEquals(2, channel.forwardChannelRetryCount_);
 
-  // We get the error immediately before starting to ping google.com.
   assertTrue(gotError);
-
-  // Simulate that timing out. We should not get another error.
+  // We get the error immediately before starting to ping google.com.
+  // Simulate that timing out. We should get a network error in addition to the
   gotError = false;
   mockClock.tick(goog.labs.net.webChannel.netUtils.NETWORK_TIMEOUT);
-  assertFalse('Extra error after network ping timed out.', gotError);
+  assertTrue('No error after network ping timed out.', gotError);
 
   // Make sure no more retry timers are firing.
   mockClock.tick(ALL_DAY_MS);
@@ -896,14 +892,13 @@ function testSetFailFastAtRetryCount() {
   assertNull(getSingleForwardRequest());
   assertEquals(0, channel.forwardChannelRetryCount_);
 
-  // We get the error immediately before starting to ping google.com.
   assertTrue(gotError);
   // We get the error immediately before starting to ping google.com.
-  // Simulate that timing out. We should not get another error in addition
-  // to the initial failure.
+  // Simulate that timing out. We should get a network error in addition to the
+  // initial failure.
   gotError = false;
   mockClock.tick(goog.labs.net.webChannel.netUtils.NETWORK_TIMEOUT);
-  assertFalse('Extra error after network ping timed out.', gotError);
+  assertTrue('No error after network ping timed out.', gotError);
 
   // Make sure no more retry timers are firing.
   mockClock.tick(ALL_DAY_MS);

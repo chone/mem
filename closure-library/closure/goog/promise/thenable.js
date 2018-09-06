@@ -14,9 +14,6 @@
 
 goog.provide('goog.Thenable');
 
-/** @suppress {extraRequire} */
-goog.forwardDeclare('goog.Promise'); // for the type reference.
-
 
 
 /**

@@ -16,7 +16,6 @@ goog.provide('goog.soy.dataTest');
 goog.setTestOnly('goog.soy.dataTest');
 
 goog.require('goog.html.SafeHtml');
-goog.require('goog.html.SafeUrl');
 /** @suppress {extraRequire} */
 goog.require('goog.soy.testHelper');
 goog.require('goog.testing.jsunit');
@@ -31,14 +30,4 @@ function testToSafeHtml() {
 
   html = example.sanitizedHtmlTemplate().toSafeHtml();
   assertEquals('Hello <b>World</b>', goog.html.SafeHtml.unwrap(html));
-}
-
-function testToSafeUrl() {
-  var url;
-
-  url = example.sanitizedSmsUrlTemplate().toSafeUrl();
-  assertEquals('sms:123456789', goog.html.SafeUrl.unwrap(url));
-
-  url = example.sanitizedHttpUrlTemplate().toSafeUrl();
-  assertEquals('https://google.com/foo?n=917', goog.html.SafeUrl.unwrap(url));
 }

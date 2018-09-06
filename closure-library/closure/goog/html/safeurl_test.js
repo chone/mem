@@ -19,7 +19,6 @@
 goog.provide('goog.html.safeUrlTest');
 
 goog.require('goog.html.SafeUrl');
-goog.require('goog.html.TrustedResourceUrl');
 goog.require('goog.i18n.bidi.Dir');
 goog.require('goog.object');
 goog.require('goog.string.Const');
@@ -131,8 +130,6 @@ function testSafeUrlFromDataUrl_withUnsafeType() {
   assertDataUrlIsSafe('data:video/mp4;baze64,z=', false);
   assertDataUrlIsSafe('data:video/mp4;,z=', false);
   assertDataUrlIsSafe('data:text/html,sdfsdfsdfsfsdfs;base64,anything', false);
-  // Valid base64 image URL, but with disallowed mime-type.
-  assertDataUrlIsSafe('data:image/svg+xml;base64,abc', false);
 }
 
 
@@ -179,15 +176,6 @@ function assertTelUrlIsSafe(url, isSafe) {
   assertEquals(
       isSafe ? url : goog.html.SafeUrl.INNOCUOUS_STRING,
       goog.html.SafeUrl.unwrap(safeUrl));
-}
-
-
-function testFromTrustedResourceUrl() {
-  var url = goog.string.Const.from('test');
-  var trustedResourceUrl = goog.html.TrustedResourceUrl.fromConstant(url);
-  var safeUrl = goog.html.SafeUrl.fromTrustedResourceUrl(trustedResourceUrl);
-  assertEquals(
-      goog.string.Const.unwrap(url), goog.html.SafeUrl.unwrap(safeUrl));
 }
 
 
@@ -256,7 +244,8 @@ function testSafeUrlSanitize_validatesUrl() {
   assertGoodUrl('p//ath');
   assertGoodUrl('p//ath?foo=bar#baz');
   assertGoodUrl('#baz');
-  // Restricted character ':' after [/?#].
+  // Restricted characters ('&', ':', \') after [/?#].
+  assertGoodUrl('/&');
   assertGoodUrl('?:');
 
   // .sanitize() works on program constants.
@@ -266,7 +255,8 @@ function testSafeUrlSanitize_validatesUrl() {
   assertBadUrl('javascript:evil();');
   assertBadUrl('javascript:evil();//\nhttp://good.com/');
   assertBadUrl('data:blah');
-  // Restricted character before [/?#].
+  // Restricted characters before [/?#].
+  assertBadUrl('&');
   assertBadUrl(':');
   // '\' is not treated like '/': no restricted characters allowed after it.
   assertBadUrl('\\:');

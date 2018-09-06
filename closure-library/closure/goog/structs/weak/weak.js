@@ -40,6 +40,7 @@
  * @package
  */
 
+
 goog.provide('goog.structs.weak');
 
 goog.require('goog.userAgent');
@@ -48,10 +49,10 @@ goog.require('goog.userAgent');
 /**
  * Whether this browser supports weak collections, using either the native or
  * shim implementation.
- * @const {boolean}
+ * @const
  */
 // Only test for shim, since ES6 native WeakMap/Set imply ES5 shim dependencies
-goog.structs.weak.SUPPORTED_BROWSER = !!Object.defineProperty &&
+goog.structs.weak.SUPPORTED_BROWSER = Object.defineProperty &&
     // IE<9 and Safari<5.1 cannot defineProperty on some objects
     !(goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9')) &&
     !(goog.userAgent.SAFARI && !goog.userAgent.isVersionOrHigher('534.48.3'));

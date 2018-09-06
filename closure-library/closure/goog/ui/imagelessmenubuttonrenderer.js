@@ -52,6 +52,14 @@ goog.ui.ImagelessMenuButtonRenderer = function() {
   goog.ui.MenuButtonRenderer.call(this);
 };
 goog.inherits(goog.ui.ImagelessMenuButtonRenderer, goog.ui.MenuButtonRenderer);
+
+
+/**
+ * The singleton instance of this renderer class.
+ * @type {goog.ui.ImagelessMenuButtonRenderer?}
+ * @private
+ */
+goog.ui.ImagelessMenuButtonRenderer.instance_ = null;
 goog.addSingletonGetter(goog.ui.ImagelessMenuButtonRenderer);
 
 

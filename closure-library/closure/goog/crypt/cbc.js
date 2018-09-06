@@ -25,7 +25,6 @@ goog.provide('goog.crypt.Cbc');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.crypt');
-goog.require('goog.crypt.BlockCipher');
 
 
 

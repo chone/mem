@@ -14,7 +14,6 @@
 
 goog.provide('goog.labs.testing.Environment');
 
-goog.require('goog.Thenable');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.debug.Console');
@@ -264,56 +263,28 @@ goog.labs.testing.EnvironmentTestCase_.prototype.registerEnvironment_ =
 
 /** @override */
 goog.labs.testing.EnvironmentTestCase_.prototype.setUpPage = function() {
-  var setUpPageFns = goog.array.map(this.environments_, function(env) {
-    return goog.bind(env.setUpPage, env);
-  }, this);
+  goog.array.forEach(this.environments_, function(env) { env.setUpPage(); });
 
   // User defined setUpPage method.
   if (this.testobj_['setUpPage']) {
-    setUpPageFns.push(goog.bind(this.testobj_['setUpPage'], this.testobj_));
+    this.testobj_['setUpPage']();
   }
-  return this.callAndChainPromises_(setUpPageFns);
 };
 
 
 /** @override */
 goog.labs.testing.EnvironmentTestCase_.prototype.setUp = function() {
-  var setUpFns = [];
   // User defined configure method.
   if (this.testobj_['configureEnvironment']) {
-    setUpFns.push(
-        goog.bind(this.testobj_['configureEnvironment'], this.testobj_));
+    this.testobj_['configureEnvironment']();
   }
 
-  goog.array.forEach(this.environments_, function(env) {
-    setUpFns.push(goog.bind(env.setUp, env));
-  }, this);
+  goog.array.forEach(this.environments_, function(env) { env.setUp(); }, this);
 
   // User defined setUp method.
   if (this.testobj_['setUp']) {
-    setUpFns.push(goog.bind(this.testobj_['setUp'], this.testobj_));
+    return this.testobj_['setUp']();
   }
-  return this.callAndChainPromises_(setUpFns);
-};
-
-
-/**
- * Calls a chain of methods and makes sure to properly chain them if any of the
- * methods returns a thenable.
- * @param {!Array<function()>} fns
- * @return {!goog.Thenable|undefined}
- * @private
- */
-goog.labs.testing.EnvironmentTestCase_.prototype.callAndChainPromises_ =
-    function(fns) {
-  return goog.array.reduce(fns, function(previousResult, fn) {
-    if (goog.Thenable.isImplementedBy(previousResult)) {
-      return previousResult.then(function() {
-        return fn();
-      });
-    }
-    return fn();
-  }, undefined /* initialValue */, this);
 };
 
 

@@ -23,8 +23,6 @@
  */
 goog.provide('goog.dom.TagName');
 
-goog.require('goog.dom.HtmlElement');
-
 
 /**
  * A tag name with the type of the element stored in the generic.
@@ -61,15 +59,15 @@ goog.dom.TagName.prototype.toString = function() {
 goog.dom.TagName.A = new goog.dom.TagName('A');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.ABBR = new goog.dom.TagName('ABBR');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.ACRONYM = new goog.dom.TagName('ACRONYM');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.ADDRESS = new goog.dom.TagName('ADDRESS');
 
 
@@ -81,11 +79,11 @@ goog.dom.TagName.APPLET = new goog.dom.TagName('APPLET');
 goog.dom.TagName.AREA = new goog.dom.TagName('AREA');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.ARTICLE = new goog.dom.TagName('ARTICLE');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.ASIDE = new goog.dom.TagName('ASIDE');
 
 
@@ -93,7 +91,7 @@ goog.dom.TagName.ASIDE = new goog.dom.TagName('ASIDE');
 goog.dom.TagName.AUDIO = new goog.dom.TagName('AUDIO');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.B = new goog.dom.TagName('B');
 
 
@@ -105,15 +103,15 @@ goog.dom.TagName.BASE = new goog.dom.TagName('BASE');
 goog.dom.TagName.BASEFONT = new goog.dom.TagName('BASEFONT');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.BDI = new goog.dom.TagName('BDI');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.BDO = new goog.dom.TagName('BDO');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.BIG = new goog.dom.TagName('BIG');
 
 
@@ -141,15 +139,15 @@ goog.dom.TagName.CANVAS = new goog.dom.TagName('CANVAS');
 goog.dom.TagName.CAPTION = new goog.dom.TagName('CAPTION');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.CENTER = new goog.dom.TagName('CENTER');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.CITE = new goog.dom.TagName('CITE');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.CODE = new goog.dom.TagName('CODE');
 
 
@@ -161,11 +159,11 @@ goog.dom.TagName.COL = new goog.dom.TagName('COL');
 goog.dom.TagName.COLGROUP = new goog.dom.TagName('COLGROUP');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.COMMAND = new goog.dom.TagName('COMMAND');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.DATA = new goog.dom.TagName('DATA');
 
 
@@ -173,7 +171,7 @@ goog.dom.TagName.DATA = new goog.dom.TagName('DATA');
 goog.dom.TagName.DATALIST = new goog.dom.TagName('DATALIST');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.DD = new goog.dom.TagName('DD');
 
 
@@ -185,7 +183,7 @@ goog.dom.TagName.DEL = new goog.dom.TagName('DEL');
 goog.dom.TagName.DETAILS = new goog.dom.TagName('DETAILS');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.DFN = new goog.dom.TagName('DFN');
 
 
@@ -205,11 +203,11 @@ goog.dom.TagName.DIV = new goog.dom.TagName('DIV');
 goog.dom.TagName.DL = new goog.dom.TagName('DL');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.DT = new goog.dom.TagName('DT');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.EM = new goog.dom.TagName('EM');
 
 
@@ -221,11 +219,11 @@ goog.dom.TagName.EMBED = new goog.dom.TagName('EMBED');
 goog.dom.TagName.FIELDSET = new goog.dom.TagName('FIELDSET');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.FIGCAPTION = new goog.dom.TagName('FIGCAPTION');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.FIGURE = new goog.dom.TagName('FIGURE');
 
 
@@ -233,7 +231,7 @@ goog.dom.TagName.FIGURE = new goog.dom.TagName('FIGURE');
 goog.dom.TagName.FONT = new goog.dom.TagName('FONT');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.FOOTER = new goog.dom.TagName('FOOTER');
 
 
@@ -277,11 +275,11 @@ goog.dom.TagName.H6 = new goog.dom.TagName('H6');
 goog.dom.TagName.HEAD = new goog.dom.TagName('HEAD');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.HEADER = new goog.dom.TagName('HEADER');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.HGROUP = new goog.dom.TagName('HGROUP');
 
 
@@ -293,7 +291,7 @@ goog.dom.TagName.HR = new goog.dom.TagName('HR');
 goog.dom.TagName.HTML = new goog.dom.TagName('HTML');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.I = new goog.dom.TagName('I');
 
 
@@ -317,12 +315,12 @@ goog.dom.TagName.INS = new goog.dom.TagName('INS');
 goog.dom.TagName.ISINDEX = new goog.dom.TagName('ISINDEX');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.KBD = new goog.dom.TagName('KBD');
 
 
 // HTMLKeygenElement is deprecated.
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.KEYGEN = new goog.dom.TagName('KEYGEN');
 
 
@@ -346,11 +344,11 @@ goog.dom.TagName.LINK = new goog.dom.TagName('LINK');
 goog.dom.TagName.MAP = new goog.dom.TagName('MAP');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.MARK = new goog.dom.TagName('MARK');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.MATH = new goog.dom.TagName('MATH');
 
 
@@ -366,15 +364,15 @@ goog.dom.TagName.META = new goog.dom.TagName('META');
 goog.dom.TagName.METER = new goog.dom.TagName('METER');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.NAV = new goog.dom.TagName('NAV');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.NOFRAMES = new goog.dom.TagName('NOFRAMES');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.NOSCRIPT = new goog.dom.TagName('NOSCRIPT');
 
 
@@ -418,23 +416,23 @@ goog.dom.TagName.PROGRESS = new goog.dom.TagName('PROGRESS');
 goog.dom.TagName.Q = new goog.dom.TagName('Q');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.RP = new goog.dom.TagName('RP');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.RT = new goog.dom.TagName('RT');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.RUBY = new goog.dom.TagName('RUBY');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.S = new goog.dom.TagName('S');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.SAMP = new goog.dom.TagName('SAMP');
 
 
@@ -442,7 +440,7 @@ goog.dom.TagName.SAMP = new goog.dom.TagName('SAMP');
 goog.dom.TagName.SCRIPT = new goog.dom.TagName('SCRIPT');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.SECTION = new goog.dom.TagName('SECTION');
 
 
@@ -450,7 +448,7 @@ goog.dom.TagName.SECTION = new goog.dom.TagName('SECTION');
 goog.dom.TagName.SELECT = new goog.dom.TagName('SELECT');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.SMALL = new goog.dom.TagName('SMALL');
 
 
@@ -462,11 +460,11 @@ goog.dom.TagName.SOURCE = new goog.dom.TagName('SOURCE');
 goog.dom.TagName.SPAN = new goog.dom.TagName('SPAN');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.STRIKE = new goog.dom.TagName('STRIKE');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.STRONG = new goog.dom.TagName('STRONG');
 
 
@@ -474,19 +472,19 @@ goog.dom.TagName.STRONG = new goog.dom.TagName('STRONG');
 goog.dom.TagName.STYLE = new goog.dom.TagName('STYLE');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.SUB = new goog.dom.TagName('SUB');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.SUMMARY = new goog.dom.TagName('SUMMARY');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.SUP = new goog.dom.TagName('SUP');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.SVG = new goog.dom.TagName('SVG');
 
 
@@ -522,7 +520,7 @@ goog.dom.TagName.TH = new goog.dom.TagName('TH');
 goog.dom.TagName.THEAD = new goog.dom.TagName('THEAD');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.TIME = new goog.dom.TagName('TIME');
 
 
@@ -538,11 +536,11 @@ goog.dom.TagName.TR = new goog.dom.TagName('TR');
 goog.dom.TagName.TRACK = new goog.dom.TagName('TRACK');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.TT = new goog.dom.TagName('TT');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.U = new goog.dom.TagName('U');
 
 
@@ -550,7 +548,7 @@ goog.dom.TagName.U = new goog.dom.TagName('U');
 goog.dom.TagName.UL = new goog.dom.TagName('UL');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.VAR = new goog.dom.TagName('VAR');
 
 
@@ -558,5 +556,5 @@ goog.dom.TagName.VAR = new goog.dom.TagName('VAR');
 goog.dom.TagName.VIDEO = new goog.dom.TagName('VIDEO');
 
 
-/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+/** @type {!goog.dom.TagName<!HTMLElement>} */
 goog.dom.TagName.WBR = new goog.dom.TagName('WBR');

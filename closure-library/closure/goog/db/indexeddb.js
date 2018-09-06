@@ -138,12 +138,10 @@ goog.db.IndexedDb.prototype.getName = function() {
 
 
 /**
- * @return {number} The current database version.
+ * @return {string} The current database version.
  */
 goog.db.IndexedDb.prototype.getVersion = function() {
-  // TODO(bradfordcsmith): drop Number() call once closure compiler's externs
-  // are updated
-  return Number(this.db_.version);
+  return this.db_.version;
 };
 
 
@@ -160,8 +158,7 @@ goog.db.IndexedDb.prototype.getObjectStoreNames = function() {
  * {@link goog.db.UpgradeNeededCallback}.
  *
  * @param {string} name Name for the new object store.
- * @param {!IDBObjectStoreParameters=} opt_params Options object.
- *     The available options are:
+ * @param {Object=} opt_params Options object. The available options are:
  *     keyPath, which is a string and determines what object attribute
  *     to use as the key when storing objects in this object store; and
  *     autoIncrement, which is a boolean, which defaults to false and determines

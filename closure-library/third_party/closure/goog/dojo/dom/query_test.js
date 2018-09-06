@@ -2,7 +2,6 @@ goog.setTestOnly('query_test');
 
 goog.require('goog.dom');
 goog.require('goog.dom.query');
-goog.require('goog.testing.asserts');
 goog.require('goog.userAgent');
 
 function testBasicSelectors() {

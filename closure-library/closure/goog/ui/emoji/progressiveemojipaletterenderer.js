@@ -74,17 +74,16 @@ goog.ui.emoji.ProgressiveEmojiPaletteRenderer.prototype
     .updateAnimatedPaletteItem = function(item, animatedImg) {
   // Just to be safe, we check for the existence of the img element within this
   // palette item before attempting to modify it.
-  /** @type {!HTMLImageElement|undefined} */
   var img;
   var el = item.firstChild;
   while (el) {
     if ('IMG' == /** @type {!Element} */ (el).tagName) {
-      img = /** @type {!HTMLImageElement} */ (el);
+      img = /** @type {!Element} */ (el);
       break;
     }
     el = el.firstChild;
   }
-  if (!img) {
+  if (!el) {
     return;
   }
 

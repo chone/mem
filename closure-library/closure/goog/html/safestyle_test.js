@@ -94,9 +94,10 @@ function testEmpty() {
 
 
 function testCreate() {
-  assertCreateEquals(
-      'background:url(i.png);margin:0;',
+  var style = goog.html.SafeStyle.create(
       {'background': goog.string.Const.from('url(i.png)'), 'margin': '0'});
+  assertEquals(
+      'background:url(i.png);margin:0;', goog.html.SafeStyle.unwrap(style));
 }
 
 
@@ -112,53 +113,25 @@ function testCreate_skipsNull() {
 
 
 function testCreate_allowsLengths() {
-  assertCreateEquals(
-      'padding:0 1px .2% 3.4em;',  // expected
-      {'padding': '0 1px .2% 3.4em'});
+  var style = goog.html.SafeStyle.create({'padding': '0 1px .2% 3.4em'});
+  assertEquals('padding:0 1px .2% 3.4em;', goog.html.SafeStyle.unwrap(style));
 }
 
 
 function testCreate_allowsRgb() {
-  assertCreateEquals(
-      'color:rgb(10,20,30);',  // expected
-      {'color': 'rgb(10,20,30)'});
-  assertCreateEquals(
-      'color:rgb(10%, 20%, 30%);',  // expected
-      {'color': 'rgb(10%, 20%, 30%)'});
+  var style = goog.html.SafeStyle.create({'color': 'rgb(10,20,30)'});
+  assertEquals('color:rgb(10,20,30);', goog.html.SafeStyle.unwrap(style));
+  style = goog.html.SafeStyle.create({'color': 'rgb(10%, 20%, 30%)'});
+  assertEquals('color:rgb(10%, 20%, 30%);', goog.html.SafeStyle.unwrap(style));
 }
 
 
 function testCreate_allowsRgba() {
-  assertCreateEquals(
-      'color:rgba(10,20,30,0.1);',  // expected
-      {'color': 'rgba(10,20,30,0.1)'});
-  assertCreateEquals(
-      'color:rgba(10%, 20%, 30%, .5);',  // expected
-      {'color': 'rgba(10%, 20%, 30%, .5)'});
-}
-
-
-function testCreate_allowsScale() {
-  assertCreateEquals(
-      'transform:scale(.5, 2);',  // expected
-      {'transform': 'scale(.5, 2)'});
-}
-
-
-function testCreate_allowsRotate() {
-  assertCreateEquals(
-      'transform:rotate(45deg);',  // expected
-      {'transform': 'rotate(45deg)'});
-}
-
-
-function testCreate_allowsTranslate() {
-  assertCreateEquals(
-      'transform:translate(10px);',  // expected
-      {'transform': 'translate(10px)'});
-  assertCreateEquals(
-      'transform:translateX(5px);',  // expected
-      {'transform': 'translateX(5px)'});
+  var style = goog.html.SafeStyle.create({'color': 'rgba(10,20,30,0.1)'});
+  assertEquals('color:rgba(10,20,30,0.1);', goog.html.SafeStyle.unwrap(style));
+  style = goog.html.SafeStyle.create({'color': 'rgba(10%, 20%, 30%, .5)'});
+  assertEquals(
+      'color:rgba(10%, 20%, 30%, .5);', goog.html.SafeStyle.unwrap(style));
 }
 
 
@@ -178,9 +151,10 @@ function testCreate_values() {
   ];
   for (var i = 0; i < valids.length; i++) {
     var value = valids[i];
-    assertCreateEquals(
-        'background:' + value + ';',  // expected
-        {'background': value});
+    assertEquals(
+        'background:' + value + ';',
+        goog.html.SafeStyle.unwrap(
+            goog.html.SafeStyle.create({'background': value})));
   }
 
   var invalids = [
@@ -193,17 +167,6 @@ function testCreate_values() {
       goog.html.SafeStyle.create({'background': value});
     });
   }
-}
-
-
-/**
- * Asserts that created SafeStyle matches expected value.
- * @param {string} expected
- * @param {!goog.html.SafeStyle.PropertyMap} style
- */
-function assertCreateEquals(expected, style) {
-  var style = goog.html.SafeStyle.create(style);
-  assertEquals(expected, goog.html.SafeStyle.unwrap(style));
 }
 
 

@@ -19,7 +19,6 @@
  */
 
 goog.provide('goog.i18n.GraphemeBreak');
-
 goog.require('goog.structs.InversionMap');
 
 

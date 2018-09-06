@@ -26,7 +26,6 @@ goog.require('goog.i18n.NumberFormatSymbols_en');
 goog.require('goog.i18n.NumberFormatSymbols_fr');
 goog.require('goog.i18n.NumberFormatSymbols_pl');
 goog.require('goog.i18n.NumberFormatSymbols_ro');
-goog.require('goog.string');
 goog.require('goog.testing.ExpectedFailures');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.jsunit');
@@ -97,12 +96,6 @@ function testVeryBigNumber() {
   assertEquals('\u221e', str);
   str = fmt.format(-Infinity);
   assertEquals('-\u221e', str);
-
-  fmt = new goog.i18n.NumberFormat(goog.i18n.NumberFormat.Format.COMPACT_SHORT);
-  str = fmt.format(Infinity);
-  assertEquals('\u221eT', str);
-  str = fmt.format(-Infinity);
-  assertEquals('-\u221eT', str);
 }
 
 function testStandardFormat() {
@@ -283,38 +276,6 @@ function testGroupingParse() {
   fmt = new goog.i18n.NumberFormat('#');
   value = fmt.parse('1234567890');
   assertEquals(1234567890, value);
-}
-
-function testParsingStop() {
-  var pos = [0];
-  var fmt = new goog.i18n.NumberFormat('###0.###E0');
-
-  assertEquals(123.457, fmt.parse('123.457', pos));
-  assertEquals(7, pos[0]);
-
-  pos[0] = 0;
-  assertEquals(123.457, fmt.parse('+123.457', pos));
-  assertEquals(8, pos[0]);
-
-  pos[0] = 0;
-  assertEquals(123, fmt.parse('123 cars in the parking lot.', pos));
-  assertEquals(3, pos[0]);
-
-  pos[0] = 0;
-  assertEquals(12, fmt.parse('12 + 12', pos));
-  assertEquals(2, pos[0]);
-
-  pos[0] = 0;
-  assertEquals(12, fmt.parse('12+12', pos));
-  assertEquals(2, pos[0]);
-
-  pos[0] = 0;
-  assertEquals(120, fmt.parse('1.2E+2', pos));
-  assertEquals(6, pos[0]);
-
-  pos[0] = 0;
-  assertEquals(120, fmt.parse('1.2E+2-12', pos));
-  assertEquals(6, pos[0]);
 }
 
 function testBasicFormat() {
@@ -554,13 +515,6 @@ function testCurrency() {
   assertEquals('BRL 1,234.56', str);
   str = fmt.format(-1234.56);
   assertEquals('(BRL 1,234.56)', str);
-
-  // Test implicit negative pattern.
-  fmt = new goog.i18n.NumberFormat('\u00a4#,##0.00');
-  str = fmt.format(1234.56);
-  assertEquals('$1,234.56', str);
-  str = fmt.format(-1234.56);
-  assertEquals('-$1,234.56', str);
 }
 
 function testQuotes() {
@@ -576,11 +530,11 @@ function testQuotes() {
 
   fmt = new goog.i18n.NumberFormat('a\'fo\'\'o\'b#');
   str = fmt.format(-123);
-  assertEquals('-afo\'ob123', str);
+  assertEquals('afo\'ob-123', str);
 
   fmt = new goog.i18n.NumberFormat('a\'\'b#');
   str = fmt.format(-123);
-  assertEquals('-a\'b123', str);
+  assertEquals('a\'b-123', str);
 }
 
 function testZeros() {
@@ -980,15 +934,6 @@ function testFractionDigitsInvalid() {
   }
 }
 
-function testFractionDigitsTooHigh() {
-  var fmt = new goog.i18n.NumberFormat(goog.i18n.NumberFormat.Format.DECIMAL);
-  fmt.setMaximumFractionDigits(308);
-  var err = assertThrows(function() {
-    fmt.setMaximumFractionDigits(309);
-  });
-  assertEquals('Unsupported maximum fraction digits: 309', err.message);
-}
-
 function testSignificantDigitsEqualToMax() {
   var fmt = new goog.i18n.NumberFormat(goog.i18n.NumberFormat.Format.DECIMAL);
   fmt.setMinimumFractionDigits(0);
@@ -1055,7 +1000,7 @@ function testSimpleCompactGerman() {
   // supposed to be interpreted as 'leave the number as-is'.
   // (The number itself will still be formatted with the '.', but no rounding)
   var str = fmt.format(1234);
-  assertEquals('1.234', str);
+  assertEquals('1,2\u00A0Tsd.', str);
 }
 
 function testSimpleCompact1() {
@@ -1301,39 +1246,4 @@ function testVerySmallNumberScientific() {  // See b/30990076.
   var f = new goog.i18n.NumberFormat(goog.i18n.NumberFormat.Format.SCIENTIFIC);
   var result = f.format(5e-324);
   assertEquals('5E-324', result);
-}
-
-function testVerySmallNumberDecimal() {
-  var f = new goog.i18n.NumberFormat(goog.i18n.NumberFormat.Format.DECIMAL);
-  f.setSignificantDigits(3);
-  f.setMaximumFractionDigits(100);
-
-  var expected = '0.' + goog.string.repeat('0', 89) + '387';
-  assertEquals(expected, f.format(3.87e-90));
-  expected = '0.' + goog.string.repeat('0', 8) + '387';
-  assertEquals(expected, f.format(3.87e-9));
-  expected = '0.' + goog.string.repeat('0', 89) + '342';
-  assertEquals(expected, f.format(3.42e-90));
-  expected = '0.' + goog.string.repeat('0', 8) + '342';
-  assertEquals(expected, f.format(3.42e-9));
-
-  f.setSignificantDigits(2);
-  expected = '0.' + goog.string.repeat('0', 89) + '39';
-  assertEquals(expected, f.format(3.87e-90));
-  expected = '0.' + goog.string.repeat('0', 8) + '39';
-  assertEquals(expected, f.format(3.87e-9));
-  expected = '0.' + goog.string.repeat('0', 89) + '34';
-  assertEquals(expected, f.format(3.42e-90));
-  expected = '0.' + goog.string.repeat('0', 8) + '34';
-  assertEquals(expected, f.format(3.42e-9));
-
-  f.setSignificantDigits(1);
-  expected = '0.' + goog.string.repeat('0', 89) + '4';
-  assertEquals(expected, f.format(3.87e-90));
-  expected = '0.' + goog.string.repeat('0', 8) + '4';
-  assertEquals(expected, f.format(3.87e-9));
-  expected = '0.' + goog.string.repeat('0', 89) + '3';
-  assertEquals(expected, f.format(3.42e-90));
-  expected = '0.' + goog.string.repeat('0', 8) + '3';
-  assertEquals(expected, f.format(3.42e-9));
 }

@@ -48,9 +48,9 @@ function testTrustedResourceUrl() {
 
 function testFormat_validFormatString() {
   // With scheme.
-  assertValidFormat(goog.string.Const.from('httpS://www.gOOgle.com/'));
+  assertValidFormat(goog.string.Const.from('https://www.google.com/path'));
   // Scheme-relative.
-  assertValidFormat(goog.string.Const.from('//www.google.com/'));
+  assertValidFormat(goog.string.Const.from('//www.google.com/path'));
   // Origin with hyphen and port.
   assertValidFormat(goog.string.Const.from('//ww-w.google.com:1000/path'));
   // IPv6 origin.
@@ -62,8 +62,8 @@ function testFormat_validFormatString() {
   assertValidFormat(goog.string.Const.from('/path?x'));
   // Mixed case.
   assertValidFormat(goog.string.Const.from('httpS://www.google.cOm/pAth'));
-  assertValidFormat(goog.string.Const.from('about:blank'));
-  assertValidFormat(goog.string.Const.from('about:blank#x'));
+  // Any char allowed after valid base path.
+  assertValidFormat(goog.string.Const.from('/path/@!%.'));
 }
 
 
@@ -124,13 +124,12 @@ function testFormat_invalidFormatString() {
   assertInvalidFormat(goog.string.Const.from('https://www.google\\.com/'));
   assertInvalidFormat(
       goog.string.Const.from('https://user:password@www.google.com/'));
-  // Two slashes, would allow origin to be set dynamically.
-  assertInvalidFormat(goog.string.Const.from('//'));
-  // Two slashes. IE allowed (allows?) '\' instead of '/'.
-  assertInvalidFormat(goog.string.Const.from('/\\'));
-  // Relative path.
-  assertInvalidFormat(goog.string.Const.from('abc'));
-  assertInvalidFormat(goog.string.Const.from('about:blankX'));
+  // Empty path.
+  assertInvalidFormat(goog.string.Const.from('https://google.com/'));
+  assertInvalidFormat(goog.string.Const.from('https://google.com//'));
+  // Invalid char in path.
+  assertInvalidFormat(goog.string.Const.from('/@'));
+  assertInvalidFormat(goog.string.Const.from('/%'));
 }
 
 

@@ -23,7 +23,6 @@ goog.provide('goog.db.Index');
 goog.require('goog.async.Deferred');
 goog.require('goog.db.Cursor');
 goog.require('goog.db.Error');
-goog.require('goog.db.KeyRange');
 goog.require('goog.debug');
 
 
@@ -59,7 +58,7 @@ goog.db.Index.prototype.getName = function() {
 
 
 /**
- * @return {*} Key path of the index.
+ * @return {string} Key path of the index.
  */
 goog.db.Index.prototype.getKeyPath = function() {
   return this.index_.keyPath;
@@ -161,13 +160,7 @@ goog.db.Index.prototype.getAll_ = function(fn, msg, opt_key) {
   request.onsuccess = function(ev) {
     var cursor = ev.target.result;
     if (cursor) {
-      if (fn == 'openKeyCursor') {
-        // openKeyCursor returns a cursor with undefined key/value. See
-        // https://w3c.github.io/IndexedDB/#dom-idbobjectstore-openkeycursor.
-        result.push(cursor.primaryKey);
-      } else {
-        result.push(cursor.value);
-      }
+      result.push(cursor.value);
       cursor['continue']();
     } else {
       d.callback(result);

@@ -26,7 +26,8 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('goog.object');
-goog.require('goog.ui.ac.RenderOptions');
+
+goog.forwardDeclare('goog.ui.ac.RenderOptions');
 
 
 /**

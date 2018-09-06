@@ -22,7 +22,6 @@ goog.provide('goog.db.Cursor');
 
 goog.require('goog.async.Deferred');
 goog.require('goog.db.Error');
-goog.require('goog.db.KeyRange');
 goog.require('goog.debug');
 goog.require('goog.events.EventTarget');
 
